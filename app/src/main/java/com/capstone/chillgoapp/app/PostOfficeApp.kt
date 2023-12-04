@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.capstone.chillgoapp.navigation.PostOfficeAppRouter
 import com.capstone.chillgoapp.navigation.Screen
+import com.capstone.chillgoapp.screens.LoginScreen
 import com.capstone.chillgoapp.screens.SignUpScreen
 import com.capstone.chillgoapp.screens.TermAndConditionsScreen
 
@@ -25,6 +26,9 @@ fun PostOfficeApp() {
                 }
                 is Screen.TermsAndConditionsScreen -> {
                     TermAndConditionsScreen()
+                }
+                is Screen.LoginScreen -> {
+                    LoginScreen()
                 }
 
                 else -> {}
