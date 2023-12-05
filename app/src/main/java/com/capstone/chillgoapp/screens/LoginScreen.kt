@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.capstone.chillgoapp.R
 import com.capstone.chillgoapp.components.ButtonComponent
 import com.capstone.chillgoapp.components.ClickableLoginTextComponent
@@ -23,13 +24,15 @@ import com.capstone.chillgoapp.components.LogoTextComponent
 import com.capstone.chillgoapp.components.MyTextFieldComponent
 import com.capstone.chillgoapp.components.NormalTextComponent
 import com.capstone.chillgoapp.components.UnderlineNormalTextComponent
+import com.capstone.chillgoapp.data.signup.SignupUIEvent
+import com.capstone.chillgoapp.data.signup.SignupViewModel
 import com.capstone.chillgoapp.navigation.PostOfficeAppRouter
 import com.capstone.chillgoapp.navigation.Screen
 import com.capstone.chillgoapp.navigation.SystemBackButtonHandler
 import com.capstone.chillgoapp.ui.theme.PrimaryBody
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(signupViewModel: SignupViewModel = viewModel()) {
 
     Surface(
         modifier = Modifier
@@ -48,16 +51,27 @@ fun LoginScreen() {
             Spacer(modifier = Modifier.height(20.dp))
             MyTextFieldComponent(
                 labelValue = stringResource(id = R.string.email),
-                painterResource(id = R.drawable.email_24))
+                painterResource(id = R.drawable.email_24),
+                onTextSelected = {
+                    signupViewModel.onEvent(SignupUIEvent.EmailChanged(it))
+                }
+            )
             MyTextFieldComponent(
                 labelValue = stringResource(id = R.string.password),
-                painterResource(id = R.drawable.lock_24))
+                painterResource(id = R.drawable.lock_24),
+                onTextSelected = {
+                    signupViewModel.onEvent(SignupUIEvent.PasswordChanged(it))
+                }
+            )
 
             Spacer(modifier = Modifier.height(10.dp))
             UnderlineNormalTextComponent(value = stringResource(id = R.string.forgot_password))
 
             Spacer(modifier = Modifier.height(40.dp))
-            ButtonComponent(value = stringResource(id = R.string.login))
+            ButtonComponent(value = stringResource(id = R.string.login),
+                onButtonClicked = {
+                    signupViewModel.onEvent(SignupUIEvent.RegisterButtonClicked)
+                })
 
             DividerTextComponent()
             ClickableLoginTextComponent(tryingToLogin = false, onTextSelected = {

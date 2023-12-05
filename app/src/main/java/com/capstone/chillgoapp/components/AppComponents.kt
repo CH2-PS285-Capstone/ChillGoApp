@@ -118,7 +118,9 @@ fun NormalTextComponent(value: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyTextFieldComponent(labelValue: String, painterResource: Painter) {
+fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
+                         onTextSelected: (String) -> Unit,
+                         errorStatus: Boolean = false) {
 
     val textValue = remember {
         mutableStateOf("")
@@ -143,6 +145,7 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter) {
             value = textValue.value,
             onValueChange = {
                 textValue.value = it
+                onTextSelected(it)
             },
             leadingIcon = {
                 Icon(
@@ -150,13 +153,16 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter) {
                     contentDescription = ""
                 )
             },
+            isError = !errorStatus
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordTextFieldComponent(labelValue: String, painterResource: Painter ) {
+fun PasswordTextFieldComponent(labelValue: String, painterResource: Painter,
+                               onTextSelected: (String) -> Unit,
+                               errorStatus: Boolean = false) {
 
     val localFocusManager = LocalFocusManager.current
     val pwd = remember {
@@ -189,6 +195,7 @@ fun PasswordTextFieldComponent(labelValue: String, painterResource: Painter ) {
             value = pwd.value,
             onValueChange = {
                 pwd.value = it
+                onTextSelected(it)
             },
             leadingIcon = {
                 Icon(
@@ -213,13 +220,15 @@ fun PasswordTextFieldComponent(labelValue: String, painterResource: Painter ) {
                     Icon(imageVector = iconImage, contentDescription = description)
                 }
             },
-            visualTransformation = if (pwdVisible.value) VisualTransformation.None else PasswordVisualTransformation()
+            visualTransformation = if (pwdVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+            isError = !errorStatus
         )
     }
 }
 
 @Composable
-fun CheckboxComponent(value: String, onTextSelected: (String)-> Unit) {
+fun CheckboxComponent(value: String, onTextSelected: (String)-> Unit,
+                      onCheckedChange: (Boolean) -> Unit) {
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -234,6 +243,7 @@ fun CheckboxComponent(value: String, onTextSelected: (String)-> Unit) {
         Checkbox(checked = checkState.value,
             onCheckedChange = {
                 checkState.value =!checkState.value
+                onCheckedChange.invoke(it)
             })
 
         ClickableTextComponent(value = value, onTextSelected)
@@ -276,9 +286,11 @@ fun ClickableTextComponent(value: String, onTextSelected: (String)-> Unit) {
 }
 
 @Composable
-fun ButtonComponent(value: String) {
+fun ButtonComponent(value: String, onButtonClicked :() -> Unit) {
     Button(
-        onClick = { /*TODO*/ },
+        onClick = {
+                  onButtonClicked.invoke()
+        },
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),

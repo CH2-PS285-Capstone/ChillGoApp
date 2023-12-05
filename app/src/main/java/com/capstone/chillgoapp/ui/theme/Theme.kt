@@ -19,10 +19,10 @@ private val DarkColorScheme = darkColorScheme(
     primary = PrimaryMain,
     secondary = PrimaryBody,
     tertiary = PrimaryBorder,
-    /*secondaryContainer = PrimaryMain,
+    secondaryContainer = PrimaryMain,
     onSecondaryContainer = PrimaryBody,
     onSurface = PrimaryMain,
-    onSurfaceVariant = PrimaryMain,*/
+    onSurfaceVariant = PrimaryMain,
 )
 
 private val LightColorScheme = lightColorScheme(

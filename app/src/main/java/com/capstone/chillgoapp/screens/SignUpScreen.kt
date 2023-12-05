@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.capstone.chillgoapp.R
 import com.capstone.chillgoapp.components.ButtonComponent
 import com.capstone.chillgoapp.components.CheckboxComponent
@@ -23,12 +24,14 @@ import com.capstone.chillgoapp.components.LogoTextComponent
 import com.capstone.chillgoapp.components.MyTextFieldComponent
 import com.capstone.chillgoapp.components.NormalTextComponent
 import com.capstone.chillgoapp.components.PasswordTextFieldComponent
+import com.capstone.chillgoapp.data.signup.SignupUIEvent
+import com.capstone.chillgoapp.data.signup.SignupViewModel
 import com.capstone.chillgoapp.navigation.PostOfficeAppRouter
 import com.capstone.chillgoapp.navigation.Screen
 import com.capstone.chillgoapp.ui.theme.PrimaryBody
 
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(signupViewModel: SignupViewModel = viewModel()) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -50,28 +53,51 @@ fun SignUpScreen() {
             Spacer(modifier = Modifier.height(20.dp))
             MyTextFieldComponent(
                 labelValue = stringResource(id = R.string.first_name),
-                painterResource(id = R.drawable.identity_24)
+                painterResource(id = R.drawable.identity_24),
+                onTextSelected = {
+                    signupViewModel.onEvent(SignupUIEvent.FirstNameChanged(it))
+                },
+                errorStatus = signupViewModel.registUIState.value.firstNameError
             )
             MyTextFieldComponent(
                 labelValue = stringResource(id = R.string.last_name),
-                painterResource = painterResource(id = R.drawable.identity_24)
+                painterResource = painterResource(id = R.drawable.identity_24),
+                onTextSelected = {
+                    signupViewModel.onEvent(SignupUIEvent.LastNameChanged(it))
+                },
+                errorStatus = signupViewModel.registUIState.value.lastNameError
             )
             MyTextFieldComponent(
                 labelValue = stringResource(id = R.string.email),
-                painterResource = painterResource(id = R.drawable.email_24)
+                painterResource = painterResource(id = R.drawable.email_24),
+                onTextSelected = {
+                    signupViewModel.onEvent(SignupUIEvent.EmailChanged(it))
+                },
+                errorStatus = signupViewModel.registUIState.value.emailError
             )
             PasswordTextFieldComponent(
                 labelValue = stringResource(id = R.string.password),
-                painterResource = painterResource(id = R.drawable.lock_24)
+                painterResource = painterResource(id = R.drawable.lock_24),
+                onTextSelected = {
+                    signupViewModel.onEvent(SignupUIEvent.PasswordChanged(it))
+                },
+                errorStatus = signupViewModel.registUIState.value.passwordError
             )
             CheckboxComponent(value = stringResource(id = R.string.terms_conditions),
                 onTextSelected = {
                     PostOfficeAppRouter.navigateTo(Screen.TermsAndConditionsScreen)
-                })
+                },
+                onCheckedChange = {
+                    signupViewModel.onEvent(SignupUIEvent.PrivacyPolicyCheckBoxClicked(it))
+                }
+            )
 
             Spacer(modifier = Modifier.height(50.dp))
 
-            ButtonComponent(value = stringResource(id = R.string.register))
+            ButtonComponent(value = stringResource(id = R.string.register),
+                onButtonClicked = {
+                    signupViewModel.onEvent(SignupUIEvent.RegisterButtonClicked)
+                })
 
             DividerTextComponent()
 
