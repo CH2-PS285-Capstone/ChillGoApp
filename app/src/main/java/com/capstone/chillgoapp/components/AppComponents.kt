@@ -119,7 +119,7 @@ fun NormalTextComponent(value: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
-                         onTextSelected: (String) -> Unit,
+                         onTextChanged: (String) -> Unit,
                          errorStatus: Boolean = false) {
 
     val textValue = remember {
@@ -145,7 +145,7 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
             value = textValue.value,
             onValueChange = {
                 textValue.value = it
-                onTextSelected(it)
+                onTextChanged(it)
             },
             leadingIcon = {
                 Icon(
@@ -286,7 +286,7 @@ fun ClickableTextComponent(value: String, onTextSelected: (String)-> Unit) {
 }
 
 @Composable
-fun ButtonComponent(value: String, onButtonClicked :() -> Unit) {
+fun ButtonComponent(value: String, onButtonClicked :() -> Unit, isEnabled: Boolean = false) {
     Button(
         onClick = {
                   onButtonClicked.invoke()
@@ -295,7 +295,8 @@ fun ButtonComponent(value: String, onButtonClicked :() -> Unit) {
             .fillMaxWidth()
             .heightIn(48.dp),
         contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
+        colors = ButtonDefaults.buttonColors(Color.Transparent),
+        enabled = isEnabled
     ) {
 
         Box(modifier = Modifier

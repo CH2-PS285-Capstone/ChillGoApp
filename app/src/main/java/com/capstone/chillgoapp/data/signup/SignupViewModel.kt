@@ -3,7 +3,12 @@ package com.capstone.chillgoapp.data.signup
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.capstone.chillgoapp.app.PostOfficeApp
 import com.capstone.chillgoapp.data.rules.Validator
+import com.capstone.chillgoapp.navigation.PostOfficeAppRouter
+import com.capstone.chillgoapp.navigation.Screen
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 
 class SignupViewModel: ViewModel() {
 
@@ -57,7 +62,10 @@ class SignupViewModel: ViewModel() {
         Log.d(TAG, "InsideSignUp")
         printState()
 
-        validateDataWithRules()
+        createUserFirebase(
+            email = registUIState.value.email,
+            password = registUIState.value.password
+        )
     }
 
     private fun validateDataWithRules() {
@@ -92,10 +100,52 @@ class SignupViewModel: ViewModel() {
             privacyPolicyAccepted = privacyPolicyResult.status
         )
 
+        allValidationsPassed.value =
+            fNameResult.status && lNameResult.status && emailResult.status &&
+                    pwdResult.status && privacyPolicyResult.status
     }
 
     private fun printState(){
         Log.d(TAG, "InsidePrintState")
         Log.d(TAG, registUIState.value.toString())
+    }
+
+    private fun createUserFirebase(email: String, password: String){
+        signUpInProgress.value = true
+
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener {
+                Log.d(TAG, "InsideOnCompleteListener")
+                Log.d(TAG, "isSuccessful = ${it.isSuccessful}")
+
+                if (it.isSuccessful){
+                    signUpInProgress.value = false
+                    PostOfficeAppRouter.navigateTo(Screen.HomeScreen)
+                }
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "InsideOnFailureListener")
+                Log.d(TAG, "Exception = ${it.message}")
+                Log.d(TAG, "Exception = ${it.localizedMessage}")
+
+                signUpInProgress.value = false
+            }
+    }
+
+    fun logout(){
+        val firebaseAuth = FirebaseAuth.getInstance()
+
+        firebaseAuth.signOut()
+
+        val authStateListener = AuthStateListener {
+            if (it.currentUser == null){
+                Log.d(TAG, "Inside Sign out success")
+                PostOfficeAppRouter.navigateTo(Screen.LoginScreen)
+            } else {
+                Log.d(TAG, "Inside Sign out is not success")
+            }
+        }
+
+        firebaseAuth.addAuthStateListener(authStateListener)
     }
 }
