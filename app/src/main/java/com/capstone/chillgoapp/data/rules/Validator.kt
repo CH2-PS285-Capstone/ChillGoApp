@@ -2,27 +2,31 @@ package com.capstone.chillgoapp.data.rules
 
 object Validator {
 
-    fun validFirstName(fName:String): ValidationResult{
+    fun validFirstName(fName: String): ValidationResult {
         return ValidationResult(
-            (!fName.isNullOrEmpty() && fName.length>=3)
+            (!fName.isNullOrEmpty() && fName.length >= 3)
         )
     }
-    fun validLastName(lName:String): ValidationResult{
+
+    fun validLastName(lName: String): ValidationResult {
         return ValidationResult(
             (!lName.isNullOrEmpty())
         )
     }
-    fun validEmail(email:String): ValidationResult{
+
+    fun validEmail(email: String): ValidationResult {
         return ValidationResult(
             (!email.isNullOrEmpty())
         )
     }
-    fun validPassword(password:String): ValidationResult{
+
+    fun validPassword(password: String): ValidationResult {
         return ValidationResult(
-            (!password.isNullOrEmpty() && password.length>=6)
+            (!password.isNullOrEmpty() && password.length >= 6)
         )
     }
-    fun validatePrivacyPolicyAcceptance(statusValue:Boolean):ValidationResult{
+
+    fun validatePrivacyPolicyAcceptance(statusValue: Boolean): ValidationResult {
         return ValidationResult(
             statusValue
         )
@@ -31,5 +35,5 @@ object Validator {
 }
 
 data class ValidationResult(
-    val status : Boolean = false
+    val status: Boolean = false
 )

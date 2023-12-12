@@ -1,14 +1,13 @@
 package com.capstone.chillgoapp.data.login
 
+//import com.capstone.chillgoapp.navigation.PostOfficeAppRouter
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.capstone.chillgoapp.data.rules.Validator
-import com.capstone.chillgoapp.navigation.PostOfficeAppRouter
-import com.capstone.chillgoapp.navigation.Screen
 import com.google.firebase.auth.FirebaseAuth
 
-class LoginViewModel: ViewModel() {
+class LoginViewModel : ViewModel() {
 
     private val TAG = LoginViewModel::class.simpleName
 
@@ -18,26 +17,33 @@ class LoginViewModel: ViewModel() {
 
     var loginInProgress = mutableStateOf(false)
 
-    fun onEvent(event: LoginUIEvent){
-        when(event) {
+    var toastMessage = mutableStateOf(String())
+
+    fun onEvent(
+        event: LoginUIEvent,
+        onNavigateToHome: () -> Unit = {}
+    ) {
+        when (event) {
             is LoginUIEvent.EmailChanged -> {
                 loginUIState.value = loginUIState.value.copy(
                     email = event.email
                 )
             }
+
             is LoginUIEvent.PasswordChanged -> {
                 loginUIState.value = loginUIState.value.copy(
                     password = event.password
                 )
             }
+
             is LoginUIEvent.LoginButtonClicked -> {
-                login()
+                login(onNavigateToHome = onNavigateToHome)
             }
         }
         validateLoginUIDataWithRules()
     }
 
-    private fun validateLoginUIDataWithRules(){
+    private fun validateLoginUIDataWithRules() {
         val emailResult = Validator.validEmail(
             email = loginUIState.value.email
         )
@@ -53,7 +59,9 @@ class LoginViewModel: ViewModel() {
         allValidationsPassed.value = emailResult.status && pwdResult.status
     }
 
-    private fun login() {
+    private fun login(
+        onNavigateToHome: () -> Unit
+    ) {
         loginInProgress.value = true
 
         val email = loginUIState.value.email
@@ -66,16 +74,22 @@ class LoginViewModel: ViewModel() {
                 Log.d(TAG, "${it.isSuccessful}")
 
                 if (it.isSuccessful) {
+                    toastMessage.value = "Login successful!"
                     loginInProgress.value = false
-                    PostOfficeAppRouter.navigateTo(Screen.HomeScreen)
+//                    PostOfficeAppRouter.navigateTo(Screen.Dashboard)
+                    onNavigateToHome()
                 }
             }
             .addOnFailureListener {
                 Log.d(TAG, "InsideOnFailureListener")
                 Log.d(TAG, "Exception = ${it.localizedMessage}")
 
+                toastMessage.value = "Login failed: ${it.localizedMessage}"
                 loginInProgress.value = false
             }
     }
 
+    fun clearToastMessage() {
+        toastMessage.value = ""
+    }
 }

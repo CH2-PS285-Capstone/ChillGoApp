@@ -11,23 +11,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.capstone.chillgoapp.R
 import com.capstone.chillgoapp.components.HeadingTextComponent
-import com.capstone.chillgoapp.navigation.PostOfficeAppRouter
-import com.capstone.chillgoapp.navigation.Screen
-import com.capstone.chillgoapp.navigation.SystemBackButtonHandler
 import com.capstone.chillgoapp.ui.theme.PrimaryBorder
 
 @Composable
 fun TermAndConditionsScreen() {
-    Surface(modifier = Modifier
-        .fillMaxSize()
-        .background(color = PrimaryBorder)
-        .padding(16.dp)
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = PrimaryBorder)
+            .padding(16.dp)
     ) {
         HeadingTextComponent(value = stringResource(id = R.string.terms_conditions_header))
     }
-    SystemBackButtonHandler {
-        PostOfficeAppRouter.navigateTo(Screen.SignUpScreen)
-    }
+//    SystemBackButtonHandler {
+//        PostOfficeAppRouter.navigateTo(Screen.SignUpScreen)
+//    }
 }
 
 @Preview

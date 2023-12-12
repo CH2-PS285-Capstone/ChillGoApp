@@ -62,12 +62,20 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3")
-    
+
+    implementation ("androidx.navigation:navigation-compose:2.6.0")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
     implementation(platform("com.google.firebase:firebase-bom:32.0.0"))
 
     implementation("com.google.firebase:firebase-auth:22.3.0")
+    implementation("androidx.benchmark:benchmark-common:1.2.2")
+    implementation("com.google.android.material:material:1.10.0")
+    implementation("androidx.compose.material3:material3:1.1.2")
+
+    implementation("com.github.a914-gowtham:compose-ratingbar:1.3.4")
+
+    implementation("com.google.maps.android:maps-compose:4.3.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
