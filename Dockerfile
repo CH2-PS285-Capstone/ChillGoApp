@@ -5,7 +5,7 @@ FROM node:14
 WORKDIR /usr/src/app
 
 # Menyalin package.json dan package-lock.json ke dalam direktori kerja di dalam container
-COPY ChillGoApp/src/package*.json ./
+COPY package*.json ./
 
 # Install dependensi yang diperlukan
 RUN npm install
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Atur perintah yang akan dijalankan saat container dimulai
-CMD ["node", "index.js"]
+CMD ["node", "src/index.js"]
