@@ -11,9 +11,9 @@ COPY ChillGoApp/src/package*.json ./
 RUN npm install
 
 # Menyalin seluruh konten ke dalam direktori kerja di dalam container
-COPY ChillGoApp/src .
+COPY . .
 
-# Port yang digunakan oleh API (misalnya, port 3000)
+# Port yang digunakan oleh API
 EXPOSE 3000
 
 # Atur perintah yang akan dijalankan saat container dimulai
