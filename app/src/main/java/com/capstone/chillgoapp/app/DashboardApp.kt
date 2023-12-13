@@ -43,6 +43,7 @@ import com.capstone.chillgoapp.screens.ReviewsScreen
 import com.capstone.chillgoapp.screens.SignUpScreen
 import com.capstone.chillgoapp.screens.SplashScreen
 import com.capstone.chillgoapp.screens.TermAndConditionsScreen
+import com.capstone.chillgoapp.screens.UmkmFormScreen
 import com.capstone.chillgoapp.screens.UmkmMapScreen
 import com.capstone.chillgoapp.ui.theme.ChillGoAppTheme
 import com.capstone.chillgoapp.ui.theme.PrimaryBorder
@@ -66,7 +67,8 @@ fun DashboardApp(
                 currentRoute != Screen.UmkmDetail.route &&
                 currentRoute != Screen.TermsAndConditionsScreen.route &&
                 currentRoute != Screen.DetailTravel.route &&
-                currentRoute != Screen.Reviews.route
+                currentRoute != Screen.Reviews.route &&
+                currentRoute != Screen.UmkmForm.route
             ) {
                 BottomBar(navController)
             }
@@ -173,6 +175,9 @@ fun DashboardApp(
                     },
                     onNavigateToLogin = {
                         navController.navigate(Screen.LoginScreen.route)
+                    },
+                    navigateToUmkmForm = {
+                        navController.navigate(Screen.UmkmForm.route)
                     }
                 )
             }
@@ -211,6 +216,11 @@ fun DashboardApp(
             composable(Screen.Reviews.route) {
                 ReviewsScreen(
                     onBackPressed = { navController.popBackStack() },
+                )
+            }
+            composable(Screen.UmkmForm.route) {
+                UmkmFormScreen(
+                    onBackPressed = { navController.popBackStack() }
                 )
             }
         }

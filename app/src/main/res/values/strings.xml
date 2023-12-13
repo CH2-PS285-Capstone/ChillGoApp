@@ -5,7 +5,6 @@
     <string name="log_in_to_your_setup_account">Log in to your Set up your account</string>
     <string name="welcome_back">Welcome Back</string>
     <string name="first_name">First Name</string>
-    <string name="last_name">Last Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="hide_password">Hide Password</string>
@@ -49,5 +48,16 @@
     <string name="last_visit">Terakhir yang anda kunjungi</string>
     <string name="review_history">Riwayat Ulasan</string>
     <string name="fav_masih_kosong">Favorite masih kosong!</string>
+    
+    <string name="name_msme">Name of MSME</string>
+    <string name="address">Address</string>
+    <string name="ratings">Ratings</string>
+    <string name="number_phone">Phone Number</string>
+    <string name="description">Description</string>
+    <string name="category">Category</string>
+    <string name="product_price">Price Rate</string>
+    <string name="schedule_ops">Schedule Operational</string>
+    <string name="submit">Submit</string>
+
 </resources>
 

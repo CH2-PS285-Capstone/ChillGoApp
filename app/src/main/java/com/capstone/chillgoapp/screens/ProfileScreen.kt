@@ -67,6 +67,7 @@ fun ProfileScreen(
     ),
     onNavigateToLogin: () -> Unit = {},
     navigateToDetail: (Long) -> Unit = {},
+    navigateToUmkmForm: () -> Unit = {}
 ) {
 
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
@@ -76,7 +77,7 @@ fun ProfileScreen(
             }
 
             is UiState.Success -> {
-                ProfilContent(navigateToDetail, onNavigateToLogin)
+                ProfilContent(navigateToDetail, navigateToUmkmForm, onNavigateToLogin)
             }
 
             is UiState.Error -> {}
@@ -88,6 +89,7 @@ fun ProfileScreen(
 @Composable
 fun ProfilContent(
     navigateToDetail: (Long) -> Unit = {},
+    navigateToUmkmForm: () -> Unit = {},
     onNavigateToLogin: () -> Unit = {},
     signupViewModel: SignupViewModel = viewModel()
 ) {
@@ -197,7 +199,7 @@ fun ProfilContent(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0X80C7CEBE)
                 ),
-                onClick = { }) {
+                onClick = { navigateToUmkmForm() }) {
                 Icon(
                     imageVector = Icons.Default.AddCircle,
                     contentDescription = "",

@@ -18,6 +18,7 @@ sealed class Screen(
     object More : Screen("more")
     object Reviews : Screen("reviews")
     object UmkmDetail : Screen("umkmDetail")
+    object UmkmForm : Screen("umkmForm")
     object DetailTravel : Screen("home/{ticketId}/{review}") {
         fun createRoute(ticketId: Long, review: Boolean) = "home/$ticketId/$review"
     }

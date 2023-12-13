@@ -41,9 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.capstone.chillgoapp.R
-import com.capstone.chillgoapp.data.signup.SignupViewModel
 import com.capstone.chillgoapp.ui.theme.PrimaryBody
 import com.capstone.chillgoapp.ui.theme.PrimaryBorder
 import com.capstone.chillgoapp.ui.theme.PrimaryMain
@@ -52,8 +50,7 @@ import com.capstone.chillgoapp.ui.theme.PrimaryMain
 @Preview
 @Composable
 fun ReviewsScreen(
-    onBackPressed: () -> Unit = {},
-    signupViewModel: SignupViewModel = viewModel()
+    onBackPressed: () -> Unit = {}
 ) {
     var selectedChip by remember {
         mutableStateOf("Semua")
