@@ -171,6 +171,9 @@ fun DashboardApp(
                     navigateToDetail = { ticketId ->
                         navController.navigate(Screen.DetailTravel.createRoute(ticketId, false))
                     },
+                    onNavigateToLogin = {
+                        navController.navigate(Screen.LoginScreen.route)
+                    }
                 )
             }
             composable(
@@ -208,9 +211,6 @@ fun DashboardApp(
             composable(Screen.Reviews.route) {
                 ReviewsScreen(
                     onBackPressed = { navController.popBackStack() },
-                    onNavigateToLogin = {
-                        navController.navigate(Screen.LoginScreen.route)
-                    }
                 )
             }
         }

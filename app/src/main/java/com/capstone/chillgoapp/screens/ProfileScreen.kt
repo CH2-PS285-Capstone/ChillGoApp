@@ -19,14 +19,19 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -47,6 +52,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.capstone.chillgoapp.R
 import com.capstone.chillgoapp.ViewModelFactory
 import com.capstone.chillgoapp.data.home.HomeViewModel
+import com.capstone.chillgoapp.data.signup.SignupViewModel
 import com.capstone.chillgoapp.model.FakeTravelDataSource
 import com.capstone.chillgoapp.model.OrderTravel
 import com.capstone.chillgoapp.ui.common.UiState
@@ -59,6 +65,7 @@ fun ProfileScreen(
     viewModel: HomeViewModel = viewModel(
         factory = ViewModelFactory()
     ),
+    onNavigateToLogin: () -> Unit = {},
     navigateToDetail: (Long) -> Unit = {},
 ) {
 
@@ -69,7 +76,7 @@ fun ProfileScreen(
             }
 
             is UiState.Success -> {
-                ProfilContent(navigateToDetail)
+                ProfilContent(navigateToDetail, onNavigateToLogin)
             }
 
             is UiState.Error -> {}
@@ -77,9 +84,12 @@ fun ProfileScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfilContent(
     navigateToDetail: (Long) -> Unit = {},
+    onNavigateToLogin: () -> Unit = {},
+    signupViewModel: SignupViewModel = viewModel()
 ) {
     val orderTravels = arrayListOf<OrderTravel>()
     FakeTravelDataSource.dummyBestTravel.forEach {
@@ -89,13 +99,43 @@ fun ProfilContent(
         modifier = Modifier
             .fillMaxSize()
             .background(PrimaryBody)
-            .padding(top = 16.dp)
+            .padding(top = 2.dp)
     ) {
         Column(
             modifier = Modifier
                 .background(PrimaryBody),
             horizontalAlignment = Alignment.Start
         ) {
+            TopAppBar(
+                title = {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(PrimaryBody),
+                        text = "",
+                        color = PrimaryMain,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.W700,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center
+                    )
+                },
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = PrimaryBody),
+                actions = {
+                    IconButton(onClick = {
+                        signupViewModel.logout(onNavigateToLogin)
+                    }) {
+                        Icon(
+                            modifier = Modifier
+                                .background(PrimaryBody),
+                            tint = PrimaryMain,
+                            imageVector = Icons.Filled.Logout,
+                            contentDescription = stringResource(R.string.logout)
+                        )
+                    }
+                }
+            )
             Surface(
                 modifier = Modifier
                     .size(114.dp)
@@ -196,7 +236,8 @@ fun LastContent(
     navigateToDetail: (Long) -> Unit,
 ) {
     LazyColumn(
-        modifier = modifier.testTag("TravelList")
+        modifier = modifier
+            .testTag("TravelList")
             .background(PrimaryBody)
     ) {
         items(orderTravel.size) { index ->

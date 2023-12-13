@@ -17,12 +17,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -56,7 +53,6 @@ import com.capstone.chillgoapp.ui.theme.PrimaryMain
 @Composable
 fun ReviewsScreen(
     onBackPressed: () -> Unit = {},
-    onNavigateToLogin: () -> Unit = {},
     signupViewModel: SignupViewModel = viewModel()
 ) {
     var selectedChip by remember {
@@ -94,19 +90,6 @@ fun ReviewsScreen(
                         contentDescription = "Back",
                         tint = PrimaryMain
                     )
-                },
-                actions = {
-                    IconButton(onClick = {
-                        signupViewModel.logout(onNavigateToLogin)
-                    }) {
-                        Icon(
-                            modifier = Modifier
-                                .background(PrimaryBody),
-                            tint = PrimaryMain,
-                            imageVector = Icons.Filled.Logout,
-                            contentDescription = stringResource(R.string.logout)
-                        )
-                    }
                 }
             )
             Spacer(modifier = Modifier.height(18.dp))

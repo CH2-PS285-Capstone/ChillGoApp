@@ -23,8 +23,6 @@ class ViewModelFactory :
             return FavoriteViewModel(repository) as T
         } else if (modelClass.isAssignableFrom(MoreViewModel::class.java)) {
             return MoreViewModel(repository) as T
-        } else if (modelClass.isAssignableFrom(MoreViewModel::class.java)) {
-            return MoreViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }

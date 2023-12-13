@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -70,58 +71,62 @@ fun HomeScreen(
             }
 
             is UiState.Success -> {
-                Column (
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(PrimaryBody)
-                ){
-                    Banner(
-                        onNavigateToMore = navigateToMore
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HomeSection(
-                        title = stringResource(R.string.nearby_tours),
-                        showLocation = true,
-                        content = {
-                            HomeContent(
-                                orderTravel = uiState.data,
-                                modifier = modifier,
-                                navigateToDetail = navigateToDetail,
-                                homeViewModel = homeViewModel
-                            )
-                        },
-                        onTextSelected = {
-                            navigateToMore()
-                        }
-                    )
-
-                    HomeSection(
-                        title = stringResource(R.string.berdasar_kota),
-                        content = {
-                            HomeCity(
-                                modifier = modifier,
-                                navigateToDetail = navigateToDetail,
-                            )
-                        },
-                        onTextSelected = {
-                            navigateToMore()
-                        }
-                    )
-
-                    HomeSection(
-                        title = stringResource(R.string.frequently_visited),
-                        content = {
-                            HomeContent(
-                                orderTravel = uiState.data,
-                                modifier = modifier.background(PrimaryBody),
-                                navigateToDetail = navigateToDetail,
-                                homeViewModel = homeViewModel
-                            )
-                        },
-                        onTextSelected = {
-                            navigateToMore()
-                        }
-                    )
+                Surface(modifier = Modifier
+                    .fillMaxSize()
+                    .background(PrimaryBody)) {
+                    Column (
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(PrimaryBody)
+                    ){
+                        Banner(
+                            onNavigateToMore = navigateToMore
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        HomeSection(
+                            title = stringResource(R.string.nearby_tours),
+                            showLocation = true,
+                            content = {
+                                HomeContent(
+                                    orderTravel = uiState.data,
+                                    modifier = modifier,
+                                    navigateToDetail = navigateToDetail,
+                                    homeViewModel = homeViewModel
+                                )
+                            },
+                            onTextSelected = {
+                                navigateToMore()
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        HomeSection(
+                            title = stringResource(R.string.berdasar_kota),
+                            content = {
+                                HomeCity(
+                                    modifier = modifier,
+                                    navigateToDetail = navigateToDetail,
+                                )
+                            },
+                            onTextSelected = {
+                                navigateToMore()
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        HomeSection(
+                            title = stringResource(R.string.frequently_visited),
+                            content = {
+                                HomeContent(
+                                    orderTravel = uiState.data,
+                                    modifier = modifier.background(PrimaryBody),
+                                    navigateToDetail = navigateToDetail,
+                                    homeViewModel = homeViewModel
+                                )
+                            },
+                            onTextSelected = {
+                                navigateToMore()
+                            }
+                        )
+                    }
                 }
             }
 
