@@ -24,30 +24,25 @@
     <string name="menu_profile">Profile</string>
     <string name="required_point">Rp %d</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </string>
-    <string name="minus_symbol">—</string>
-    <string name="plus_symbol">＋</string>
-    <string name="add_to_cart">Tambah ke Keranjang : Rp %d</string>
-    <string name="total_order">Total pesanan : Rp %d</string>
     <string name="back">Back</string>
     <string name="subject_ticket">Reservasi/Booking Wisata</string>
     <string name="share_message">Hallo Admin, Saya ingin reservasi/booking untuk %1$d tiket dengan total Rp. %2$d. Apakah tersedia?</string>
 
     <string name="placeholder_search">Cari kebutuhanmu disini!</string>
-    <string name="nearby_tours">Wisata Terdekat Untuk Anda</string>
+    <string name="top_rating">Top High Rating</string>
     <string name="list_favorite_menu">Daftar Favorit Anda</string>
-    <string name="frequently_visited">Yang Sering Dikunjungi</string>
-    <string name="keranjang_masih_kosong">Keranjang masih kosong!</string>
+    <string name="top_place">Top Place Recommendation</string>
     <string name="last_one_you_visited">Last one you visited</string>
 
     <string name="continue_google">Continue with Google</string>
     <string name="continue_facebook">Continue with Facebook</string>
     <string name="location">Lokasi user</string>
     <string name="more">More</string>
-    <string name="berdasar_kota">Berdasarkan Kota</string>
+    <string name="by_city">Based on City</string>
     <string name="favorite">Favorites</string>
     <string name="last_visit">Terakhir yang anda kunjungi</string>
-    <string name="review_history">Riwayat Ulasan</string>
-    <string name="fav_masih_kosong">Favorite masih kosong!</string>
+    <string name="review_history">Review History</string>
+    <string name="fav_is_empty">Favorite is empty!</string>
     
     <string name="name_msme">Name of MSME</string>
     <string name="address">Address</string>
@@ -58,6 +53,8 @@
     <string name="product_price">Price Rate</string>
     <string name="schedule_ops">Schedule Operational</string>
     <string name="submit">Submit</string>
+    <string name="msme_submission">MSME Submission</string>
+    <string name="data_of_your_msme">Data of your MSME</string>
 
 </resources>
 

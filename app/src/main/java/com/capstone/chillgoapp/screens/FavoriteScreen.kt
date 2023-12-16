@@ -55,7 +55,7 @@ fun FavoriteScreen(
                             .padding(top = 16.dp)
                     ) {
                         Text(
-                            text = stringResource(R.string.fav_masih_kosong),
+                            text = stringResource(R.string.fav_is_empty),
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(PrimaryBody),

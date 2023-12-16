@@ -83,43 +83,22 @@ fun OnBoardingChips() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row {
-            OnBoardingChip(label = "Beach", selectedChip = selectedChip) {
+            OnBoardingChip(label = "Theme Park", selectedChip = selectedChip) {
                 selectedChip = it
             }
             Spacer(modifier = Modifier.width(12.dp))
-            OnBoardingChip(label = "Waterfall", selectedChip = selectedChip) {
-                selectedChip = it
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            OnBoardingChip(label = "Snorkeling", selectedChip = selectedChip) {
+            OnBoardingChip(label = "Nature Reserve", selectedChip = selectedChip) {
                 selectedChip = it
             }
         }
         Spacer(modifier = Modifier.height(12.dp))
         Row {
-            OnBoardingChip(label = "Driving", selectedChip = selectedChip) {
+            Spacer(modifier = Modifier.width(12.dp))
+            OnBoardingChip(label = "Place of Worship", selectedChip = selectedChip) {
                 selectedChip = it
             }
             Spacer(modifier = Modifier.width(12.dp))
-            OnBoardingChip(label = "Nature", selectedChip = selectedChip) {
-                selectedChip = it
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            OnBoardingChip(label = "Garden", selectedChip = selectedChip) {
-                selectedChip = it
-            }
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-        Row {
-            OnBoardingChip(label = "Zoo", selectedChip = selectedChip) {
-                selectedChip = it
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            OnBoardingChip(label = "Cavern", selectedChip = selectedChip) {
-                selectedChip = it
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            OnBoardingChip(label = "Adventure", selectedChip = selectedChip) {
+            OnBoardingChip(label = "Culture", selectedChip = selectedChip) {
                 selectedChip = it
             }
         }

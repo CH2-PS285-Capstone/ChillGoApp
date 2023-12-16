@@ -84,8 +84,18 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         HomeSection(
-                            title = stringResource(R.string.nearby_tours),
-                            showLocation = true,
+                            title = stringResource(R.string.by_city),
+                            content = {
+                                HomeCity(
+                                    modifier = modifier,
+                                    navigateToDetail = navigateToDetail,
+                                )
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        HomeSection(
+                            title = stringResource(R.string.top_rating),
+                            /*showLocation = true,*/
                             content = {
                                 HomeContent(
                                     orderTravel = uiState.data,
@@ -100,20 +110,7 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         HomeSection(
-                            title = stringResource(R.string.berdasar_kota),
-                            content = {
-                                HomeCity(
-                                    modifier = modifier,
-                                    navigateToDetail = navigateToDetail,
-                                )
-                            },
-                            onTextSelected = {
-                                navigateToMore()
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                        HomeSection(
-                            title = stringResource(R.string.frequently_visited),
+                            title = stringResource(R.string.top_place),
                             content = {
                                 HomeContent(
                                     orderTravel = uiState.data,
@@ -208,15 +205,16 @@ fun HomeContent(
 
 @Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview() {
+fun HomeScreenPreview(homeViewModel: HomeViewModel = viewModel(),
+                      navigateToMore: () -> Unit = {}) {
     val orders = arrayListOf<OrderTravel>()
     FakeTravelDataSource.dummyTravels.forEach {
         orders.add(OrderTravel(it, 0))
     }
 
     HomeContent(
+        homeViewModel = homeViewModel,
         orderTravel = orders,
         navigateToDetail = {},
-        homeViewModel = viewModel()
     )
 }

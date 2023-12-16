@@ -207,7 +207,7 @@ fun ProfilContent(
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Pengajuan UMKM",
+                    text = stringResource(R.string.msme_submission),
                     color = PrimaryMain,
                     fontWeight = FontWeight.W600,
                     textAlign = TextAlign.Center
@@ -216,7 +216,7 @@ fun ProfilContent(
             Spacer(modifier = Modifier.height(22.dp))
             Text(
                 modifier = Modifier.padding(start = 16.dp),
-                text = "Data UMKM Anda",
+                text = stringResource(R.string.data_of_your_msme),
                 color = PrimaryMain,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.W600
