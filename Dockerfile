@@ -5,7 +5,7 @@ FROM python:3.11.0
 WORKDIR /usr/src/app
 
 # Copy semua file ke dalam working directory di dalam container
-COPY . .
+COPY . /usr/src/app
 
 # Install dependencies
 RUN pip install --upgrade pip \
