@@ -16,4 +16,4 @@ RUN pip install --upgrade pip \
 EXPOSE 5000
 
 # Menjalankan aplikasi dengan Gunicorn
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "py:app"]
