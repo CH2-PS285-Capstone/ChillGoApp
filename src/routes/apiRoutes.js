@@ -15,7 +15,7 @@ router.delete('/places/:id', placeController.deletePlace);
 router.get('/recommended-places', placeController.getRecommendedPlaces);
 router.get('/places-by-region/:region', placeController.getPlacesByRegion);
 router.get('/favorite-places', placeController.getFavoritePlaces);
-router.get('/popular-places', placeController.getPopularPlaces);
+router.get('/toprating', placeController.getTopRatingPlaces);
 router.get('/umkm', umkmController.getAllUMKM);
 router.get('/places/:placeId/umkm', umkmController.getAllUMKMByPlaceId);
 router.post('/places/:placeId/umkm', uploadMiddleware.single('file'), umkmController.addUMKM);
