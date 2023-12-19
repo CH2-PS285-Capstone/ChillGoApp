@@ -1,23 +1,13 @@
-# Menggunakan base image Python 3.11.0
 FROM python:3.11.0
 
-# Set working directory di dalam container
-WORKDIR /usr/src/app
+ENV PYTHONBUFFERED True
 
-# Menyalin file requirements.txt ke dalam container
-COPY requirements.txt requirements.txt
+ENV APP_HOME /app
 
-# Mengatur environment variable untuk memperbaiki stdout buffering
-ENV PYTHONUNBUFFERED=1
+WORKDIR $APP_HOME
 
-# Mengatur host yang akan digunakan oleh aplikasi (0.0.0.0 = semua alamat yang tersedia)
-ENV HOST 0.0.0.0
+COPY . ./
 
-# Mengekspos port 8080 untuk komunikasi internal aplikasi jika diperlukan
-EXPOSE 8080
+RUN pip install -r requirements.txt
 
-# Expose port yang digunakan oleh aplikasi Flask (5000 default untuk Flask)
-EXPOSE 5000
-
-# Menjalankan aplikasi dengan perintah python main.py
-CMD ["python", "app.py"]
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app 
