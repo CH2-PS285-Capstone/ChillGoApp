@@ -1,3 +1,10 @@
+"""
+
+file ini adalah rekomendasi wisata berdasarkan hasil searching user
+(berdasarkan kota/kabupaten wisata yang dicari user)
+
+"""
+
 from flask import Flask, jsonify, request
 import numpy as np
 import pandas as pd
