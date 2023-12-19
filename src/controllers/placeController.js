@@ -1,16 +1,13 @@
-// Fungsi bantuan untuk mengunggah gambar ke Google Cloud Storage
 const { storage, bucketName } = require('../config/gcs.config');
 const { Places, UMKM, ratingusers, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const axios = require('axios');
 const { Readable } = require('stream');
-// Middleware untuk menangani upload file
 const multer = require('multer');
 const uploadStorage = multer.memoryStorage();
 const upload = multer({ storage: uploadStorage }).single('file');
 require('dotenv').config();
 
-// Fungsi bantuan untuk mengunggah gambar ke Google Cloud Storage
 const uploadImageToGCS = async(file) => {
     try {
         if (!file || !file.originalname || !file.mimetype || !file.buffer) {
@@ -126,8 +123,8 @@ const updatePlace = async(req, res) => {
         coordinate,
         latitude,
         longitude,
-        review, // tambahan field pada tabel
-        schedule_operational // tambahan field pada tabel
+        review,
+        schedule_operational
     } = req.body;
 
     try {
@@ -181,98 +178,26 @@ const deletePlace = async(req, res) => {
     }
 };
 
+
 const getRecommendedPlaces = async(req, res) => {
     try {
-        const recommendedPlaces = await Places.findAll({
-            order: [
-                ['rating', 'DESC']
-            ],
-            limit: 20,
-        });
-
-        console.log('Recommended Tourist Attractions:', recommendedPlaces);
-        res.status(200).json({ status: 'success', data: recommendedPlaces });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
-    }
-};
-
-const getPlacesByRegion = async(req, res) => {
-    const { region } = req.params;
-    try {
-        const placesByRegion = await Places.findAll({
-            where: {
-                city: region,
-            },
-        });
-        console.log('Tourist Attractions in ${region}:', placesByRegion);
-        res.status(200).json({ status: 'success', data: placesByRegion });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
-    }
-};
-
-// const getFavoritePlaces = async(req, res) => {
-//     try {
-//         const favoritePlaces = await Places.findAll({
-//             where: {
-//                 rating: {
-//                     [Op.gte]: 4.5,
-//                 },
-//             },
-//         });
-
-//         console.log('Favorite Tourist Attractions:', favoritePlaces);
-//         res.status(200).json({ status: 'success', data: favoritePlaces });
-//     } catch (error) {
-//         console.error('Error:', error);
-//         res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
-//     }
-// };           ini yang asli diawal
-
-// const getPopularPlaces = async(req, res) => {
-//     try {
-//         const popularPlaces = await Places.findAll({
-//             order: [
-//                 ['rating', 'DESC']
-//             ],
-//             limit: 5,
-//         });
-
-//         console.log('Most Popular Tourist Attractions:', popularPlaces);
-//         res.status(200).json({ status: 'success', data: popularPlaces });
-//     } catch (error) {
-//         console.error('Error:', error);
-//         res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
-//     }
-// };
-
-
-
-//perubahan ini untuk favorite
-
-const getFavoritePlaces = async(req, res) => {
-    try {
-        // Menemukan tempat wisata favorit dari model ratingusers.js
         const favoritePlaces = await ratingusers.findAll({
-            attributes: ['place_id', 'place_name', 'place_rating'], // Hanya menampilkan kolom yang diperlukan
+            attributes: ['place_id', 'place_name', 'place_rating'],
             where: {
                 place_rating: {
-                    [Op.gte]: 4.5,
+                    [Op.gte]: 4,
                 },
             },
             include: [{
                 model: Places,
                 attributes: ['rating'],
                 where: {
-                    id: sequelize.col('ratingusers.place_id'), // Menyesuaikan dengan hubungan antara place_id di kedua model
+                    id: sequelize.col('ratingusers.place_id'),
                 },
             }, ],
         });
 
-        console.log('Favorite Tourist Attractions:', favoritePlaces);
+        console.log('Recommended Tourist Attractions:', favoritePlaces);
         const formattedFavoritePlaces = favoritePlaces.map(place => {
             const ratings = favoritePlaces
                 .filter(fp => fp.place_id === place.place_id)
@@ -302,6 +227,42 @@ const getFavoritePlaces = async(req, res) => {
 };
 
 
+const getPlacesByRegion = async(req, res) => {
+    const { region } = req.params;
+    try {
+        const placesByRegion = await Places.findAll({
+            where: {
+                city: region,
+            },
+        });
+        console.log('Tourist Attractions in ${region}:', placesByRegion);
+        res.status(200).json({ status: 'success', data: placesByRegion });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
+    }
+};
+
+
+const getFavoritePlaces = async(req, res) => {
+    try {
+        const favoritePlaces = await Places.findAll({
+            where: {
+                rating: {
+                    [Op.gte]: 4.5,
+                },
+            },
+        });
+
+        console.log('Favorite Tourist Attractions:', favoritePlaces);
+        res.status(200).json({ status: 'success', data: favoritePlaces });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
+    }
+};
+
+
 const getPopularPlaces = async(req, res) => {
     try {
         const popularPlaces = await ratingusers.findAll({
@@ -309,7 +270,7 @@ const getPopularPlaces = async(req, res) => {
                 ['place_rating', 'DESC'],
             ],
             limit: 5,
-            include: [Places], // Include Places model to get additional details
+            include: [Places],
         });
 
         console.log('Most Popular Tourist Attractions:', popularPlaces);

@@ -1,13 +1,11 @@
 const { Places, UMKM } = require('../models');
-const axios = require('axios');
 const { Readable } = require('stream');
-//middleware untuk menangani upload file 
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }).single('file');
 const { storage: gcsStorage, bucketName } = require('../config/gcs.config');
 
-// Fungsi bantuan untuk mengunggah gambar ke Google Cloud Storage
+
 const uploadImageToGCS = async(file) => {
     try {
         if (!file || !file.originalname || !file.mimetype || !file.buffer) {
@@ -38,6 +36,20 @@ const uploadImageToGCS = async(file) => {
     }
 };
 
+
+const getAllUMKM = async(req, res) => {
+    try {
+        const umkmList = await UMKM.findAll();
+
+        console.log('List of all MSMEs:', umkmList);
+        res.status(200).json({ success: true, message: 'Successfully get a list of all MSMEs', data: umkmList });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+    }
+};
+
+
 const getAllUMKMByPlaceId = async(req, res) => {
     const placeId = parseInt(req.params.placeId, 10);
     if (isNaN(placeId)) {
@@ -58,6 +70,7 @@ const getAllUMKMByPlaceId = async(req, res) => {
         res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
     }
 };
+
 
 const addUMKM = async(req, res) => {
     const placeId = parseInt(req.params.placeId, 10);
@@ -109,6 +122,7 @@ const addUMKM = async(req, res) => {
         res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
     }
 };
+
 
 const updateUMKM = async(req, res) => {
     const { id } = req.params;
@@ -176,12 +190,13 @@ const deleteUMKM = async(req, res) => {
     }
 };
 
+
 module.exports = {
+    getAllUMKM,
     getAllUMKMByPlaceId,
     addUMKM,
     updateUMKM,
     deleteUMKM,
     upload,
     uploadImageToGCS,
-    // ... (fungsi lain jika diperlukan)
 };
