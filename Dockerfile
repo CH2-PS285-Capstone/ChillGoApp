@@ -1,19 +1,17 @@
-# Menggunakan base image Python 3.11.0
-FROM python:3.11.0
+# Gunakan base image yang sudah termasuk Python dan pip
+FROM python:3.11-slim
 
-# Set working directory di dalam container
-WORKDIR /usr/src/app
+# Atur working directory di dalam kontainer
+WORKDIR /app
 
-# Copy semua file ke dalam working directory di dalam container
-COPY . .
+# Salin file-file proyek ke dalam kontainer
+COPY . /app
 
-# Install dependencies
-RUN pip install --upgrade pip \
-    && pip install tensorflow==2.14.0 \
-    && pip install keras gunicorn
+# Install dependensi dari requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port yang digunakan oleh aplikasi Flask
+# Expose port yang digunakan oleh aplikasi
 EXPOSE 5000
 
-# Menjalankan aplikasi dengan Gunicorn
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app"]
+# Perintah untuk menjalankan aplikasi Flask menggunakan Gunicorn
+CMD ["gunicorn", "-w", "4", "app:app", "--bind", "0.0.0.0:5000"]
