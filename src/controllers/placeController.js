@@ -181,7 +181,7 @@ const deletePlace = async(req, res) => {
 
 const getRecommendedPlaces = async(req, res) => {
     try {
-        const favoritePlaces = await ratingusers.findAll({
+        const recommendedPlaces = await ratingusers.findAll({
             attributes: ['place_id', 'place_name', 'place_rating'],
             where: {
                 place_rating: {
@@ -197,9 +197,10 @@ const getRecommendedPlaces = async(req, res) => {
             }, ],
         });
 
-        console.log('Recommended Tourist Attractions:', favoritePlaces);
-        const formattedFavoritePlaces = favoritePlaces.map(place => {
-            const ratings = favoritePlaces
+        console.log('Recommended Tourist Attractions:', recommendedPlaces);
+
+        const formattedRecommendedPlaces = recommendedPlaces.map(place => {
+            const ratings = recommendedPlaces
                 .filter(fp => fp.place_id === place.place_id)
                 .map(fp => ({
                     user_id: fp.user_id,
@@ -217,7 +218,7 @@ const getRecommendedPlaces = async(req, res) => {
         res.status(200).json({
             status: 'success',
             data: {
-                favoritePlaces: formattedFavoritePlaces,
+                recommendedPlaces: formattedRecommendedPlaces,
             },
         });
     } catch (error) {
@@ -263,9 +264,14 @@ const getFavoritePlaces = async(req, res) => {
 };
 
 
-const getPopularPlaces = async(req, res) => {
+const getTopRatingPlaces = async(req, res) => {
     try {
-        const popularPlaces = await ratingusers.findAll({
+        const topRatingPlaces = await ratingusers.findAll({
+            where: {
+                place_rating: {
+                    [Op.gte]: 4,
+                },
+            },
             order: [
                 ['place_rating', 'DESC'],
             ],
@@ -273,8 +279,8 @@ const getPopularPlaces = async(req, res) => {
             include: [Places],
         });
 
-        console.log('Most Popular Tourist Attractions:', popularPlaces);
-        res.status(200).json({ status: 'success', data: popularPlaces });
+        console.log('Top Rated Tourist Attractions:', topRatingPlaces);
+        res.status(200).json({ status: 'success', data: topRatingPlaces });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
@@ -291,7 +297,7 @@ module.exports = {
     getRecommendedPlaces,
     getPlacesByRegion,
     getFavoritePlaces,
-    getPopularPlaces,
+    getTopRatingPlaces,
     upload,
     uploadImageToGCS,
 };
