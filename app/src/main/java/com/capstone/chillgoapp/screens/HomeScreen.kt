@@ -7,10 +7,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,7 +32,7 @@ import com.capstone.chillgoapp.ViewModelFactory
 import com.capstone.chillgoapp.components.CityItem
 import com.capstone.chillgoapp.components.HomeSection
 import com.capstone.chillgoapp.components.PlaceItem
-import com.capstone.chillgoapp.components.Search
+import com.capstone.chillgoapp.components.buttonSearch
 import com.capstone.chillgoapp.data.home.HomeViewModel
 import com.capstone.chillgoapp.model.FakeTravelDataSource
 import com.capstone.chillgoapp.model.OrderTravel
@@ -49,7 +50,7 @@ fun Banner(
             contentScale = ContentScale.Crop,
             modifier = Modifier.height(160.dp),
         )
-        Search(
+        buttonSearch(
             onNavigateToMore = onNavigateToMore
         )
     }
@@ -69,30 +70,31 @@ fun HomeScreen(
             is UiState.Loading -> {
                 homeViewModel.getAllTravels()
             }
-
             is UiState.Success -> {
-                Surface(modifier = Modifier
-                    .fillMaxSize()
-                    .background(PrimaryBody)) {
-                    Column (
+                Surface(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .background(PrimaryBody)
+                ) {
+                    Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(PrimaryBody)
-                    ){
+                    ) {
                         Banner(
                             onNavigateToMore = navigateToMore
                         )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        /*Spacer(modifier = Modifier.height(10.dp))*/
                         HomeSection(
                             title = stringResource(R.string.by_city),
                             content = {
                                 HomeCity(
                                     modifier = modifier,
-                                    navigateToDetail = navigateToDetail,
+                                    navigateToMore = navigateToMore,
                                 )
                             }
                         )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        /*Spacer(modifier = Modifier.height(10.dp))*/
                         HomeSection(
                             title = stringResource(R.string.top_rating),
                             /*showLocation = true,*/
@@ -108,7 +110,7 @@ fun HomeScreen(
                                 navigateToMore()
                             }
                         )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        /* Spacer(modifier = Modifier.height(10.dp))*/
                         HomeSection(
                             title = stringResource(R.string.top_place),
                             content = {
@@ -132,6 +134,7 @@ fun HomeScreen(
     }
 }
 
+/*
 @Composable
 fun HomeCity(
     modifier: Modifier = Modifier,
@@ -159,6 +162,43 @@ fun HomeCity(
         }
     }
 }
+*/
+
+@Composable
+fun HomeCity(
+    modifier: Modifier = Modifier,
+    navigateToMore: () -> Unit
+) {
+    val cityImages = mapOf(
+        "Bandung" to R.drawable.bandung,
+        "Jakarta" to R.drawable.jakarta,
+        "Sukabumi" to R.drawable.sukabumi,
+        "Bogor" to R.drawable.bogor,
+        "Yogyakarta" to R.drawable.yogyakarta,
+        "Semarang" to R.drawable.semarang,
+        "Surabaya" to R.drawable.surabaya
+    )
+
+    LazyRow(
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier.testTag("TravelList")
+    ) {
+        items(cityImages.keys.toList()) { city ->
+            val imageResId = cityImages[city] ?: R.drawable.bandung
+
+            CityItem(
+                image = imageResId,
+                title = city,
+                modifier = Modifier.clickable {
+                    // Implement logic when a city is clicked
+                    navigateToMore()
+                }
+            )
+        }
+    }
+}
+
 
 @Composable
 fun HomeContent(

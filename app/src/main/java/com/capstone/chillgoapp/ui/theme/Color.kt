@@ -3,7 +3,7 @@ package com.capstone.chillgoapp.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
+val Gray = Color(0xF5F2F2F3)
 val Pink80 = Color(0xFF7D5260)
 
 val TextColor = Color(0xFF8C8C8C)
