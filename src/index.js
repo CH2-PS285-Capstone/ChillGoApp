@@ -7,60 +7,24 @@ const { uploadImageToGCS, upload } = require('./controllers/placeController');
 require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
-
 app.use(cors());
 app.use(express.json());
 
-// Gunakan rute-rute API utama
+
+// Use the API routes defined in apiRoutes.js
 app.use('/api', apiRoutes);
 
-app.post('/upload', upload, async(req, res) => {
-    try {
-        const imageUrl = req.file ? await uploadImageToGCS(req.file, gcsConfig) : null;
-
-        // Simpan URL gambar ke basis data atau lakukan yang lain sesuai kebutuhan
-        // Misalnya, menyimpan URL gambar ke tabel Places
-        const { id } = req.body; // Misalnya, ID tempat dari permintaan POST
-        if (id) {
-            await Places.update({ image_url: imageUrl }, { where: { id } });
-        }
-
-        res.status(200).json({ imageUrl });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Kesalahan Server Internal' });
-    }
-});
-
-// Endpoint untuk pesan selamat datang
+// Main (root) route that provides a simple welcome message as the response
 app.get('/', (req, res) => {
-    res.send('Selamat datang di ChillGo! Mari jelajahi Jawa Barat Bersama ^_^');
+    res.send('Welcome to ChillGo! Lets explore West Java together ^_^');
 });
 
-// Middleware untuk menangani rute yang tidak ditemukan
+// Middleware: Handle requests that do not match any route with a 404 response
 app.use((req, res) => {
-    res.status(404).json({ success: false, message: 'Maaf, rute tidak ditemukan!' });
+    res.status(404).json({ success: false, message: 'Sorry, route not found!' });
 });
 
-
-// Jalankan server
+// Start the server on the specified port
 app.listen(PORT, () => {
     console.log(`Server berjalan di port ${PORT}`);
-});
-
-
-/// api ml
-app.post('/make_prediction', async(req, res) => {
-    try {
-        // Mengirim permintaan ke Flask API
-        const flaskApiResponse = await axios.post('http://flask-api-url/predict', {
-            features: req.body.features
-        });
-
-        // Mengirim hasil prediksi ke klien
-        res.json({ result: flaskApiResponse.data.result });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
 });
