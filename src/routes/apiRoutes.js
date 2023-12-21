@@ -7,10 +7,11 @@ const uploadStorage = multer.memoryStorage();
 const uploadMiddleware = multer({ storage: uploadStorage });
 const router = express.Router();
 
-router.get('/places', placeController.getAllPlaces);
+
+
+router.get('/places', placeController.getAllPlacesPaginated);
 router.get('/places/:id', placeController.getPlaceById);
 router.post('/places', uploadMiddleware.single('file'), placeController.addPlace);
-router.put('/places/:id', uploadMiddleware.single('file'), placeController.updatePlace);
 router.delete('/places/:id', placeController.deletePlace);
 router.get('/recommended-places', placeController.getRecommendedPlaces);
 router.get('/places-by-region/:region', placeController.getPlacesByRegion);
