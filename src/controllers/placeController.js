@@ -8,6 +8,8 @@ const uploadStorage = multer.memoryStorage();
 const upload = multer({ storage: uploadStorage }).single('file');
 require('dotenv').config();
 
+
+// Function to upload an image to Google Cloud Storage
 const uploadImageToGCS = async(file) => {
     try {
         if (!file || !file.originalname || !file.mimetype || !file.buffer) {
@@ -37,17 +39,48 @@ const uploadImageToGCS = async(file) => {
     }
 };
 
-const getAllPlaces = async(req, res) => {
+
+// Controller to get a paginated list of places
+const getAllPlacesPaginated = async(req, res) => {
+    const { cursor } = req.query;
+    const limit = 7;
+
     try {
-        const placeList = await Places.findAll();
-        console.log('DList of Tourist Attractions:', placeList);
-        res.status(200).json({ success: true, message: 'Successfully get a list of tourist attractions', data: placeList });
+        const whereClause = cursor ? {
+            id: {
+                [Op.gt]: cursor
+            }
+        } : {};
+        console.log('Where Clause:', whereClause);
+
+        const places = await Places.findAll({
+            where: whereClause,
+            limit,
+        });
+
+        console.log('Places:', places);
+
+        const nextCursor = places.length > 0 ? places[places.length - 1].id : null;
+        console.log('Next Cursor:', nextCursor);
+
+        res.status(200).json({
+            error: false,
+            message: 'Data retrieved successfully',
+            data: places,
+            nextCursor,
+        });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+        res.status(500).json({
+            error: true,
+            message: 'Internal Server Error',
+            data: null
+        });
     }
 };
 
+
+// Controller to get details of a place by ID
 const getPlaceById = async(req, res) => {
     const { id } = req.params;
     try {
@@ -56,16 +89,17 @@ const getPlaceById = async(req, res) => {
 
         });
         if (!placeData) {
-            return res.status(404).json({ status: 'error', message: 'Tourist attractions not found' });
+            return res.status(404).json({ error: true, message: 'Tourist attractions not found', data: null });
         }
         console.log('Tourist Attraction Details:', placeData);
-        res.status(200).json({ status: 'success', data: placeData });
+        res.status(200).json({ error: false, message: 'Data retrieved successfully', data: placeData });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
+        res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
     }
 };
 
+// Controller to add a new place
 const addPlace = async(req, res, next) => {
     const {
         place_name,
@@ -103,13 +137,14 @@ const addPlace = async(req, res, next) => {
         });
 
         console.log('New Tourist Attractions:', newPlace);
-        res.status(201).json({ status: 'success', message: 'Tourist attractions added successfully', data: newPlace });
+        res.status(201).json({ error: false, message: 'Tourist attractions added successfully', data: newPlace });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
+        res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
     }
 };
 
+// Controller to update an existing place by ID
 const updatePlace = async(req, res) => {
     const { id } = req.params;
     const {
@@ -130,7 +165,7 @@ const updatePlace = async(req, res) => {
     try {
         const placeData = await Places.findByPk(id);
         if (!placeData) {
-            return res.status(404).json({ status: 'error', message: 'Tourist attractions not found' });
+            return res.status(404).json({ error: true, message: 'Tourist attractions not found', data: null });
         }
 
         const imageUrl = req.file ? await uploadImageToGCS(req.file) : placeData.image_url;
@@ -152,33 +187,35 @@ const updatePlace = async(req, res) => {
         });
 
         console.log('Tourist Attractions Updated:', placeData);
-        res.status(200).json({ status: 'success', message: 'Tourist attractions updated successfully', data: placeData });
+        res.status(200).json({ error: false, message: 'Tourist attractions updated successfully', data: placeData });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
+        res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
     }
 };
 
+// Controller to delete a place by ID
 const deletePlace = async(req, res) => {
     const { id } = req.params;
 
     try {
         const placeData = await Places.findByPk(id);
         if (!placeData) {
-            return res.status(404).json({ status: 'error', message: 'Tourist attractions not found' });
+            return res.status(404).json({ error: true, message: 'Tourist attractions not found', data: null });
         }
 
         await placeData.destroy();
 
         console.log('Tourist Attractions Removed:', placeData);
-        res.status(204).json({ status: 'success', message: 'Tourist attractions successfully deleted' });
+        res.status(204).json({ error: false, message: 'Tourist attractions successfully deleted', data: null });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
+        res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
     }
 };
 
 
+// Controller to get recommended places based on user ratings
 const getRecommendedPlaces = async(req, res) => {
     try {
         const recommendedPlaces = await ratingusers.findAll({
@@ -216,18 +253,20 @@ const getRecommendedPlaces = async(req, res) => {
         });
 
         res.status(200).json({
-            status: 'success',
+            error: false,
+            message: 'Data retrieved successfully',
             data: {
                 recommendedPlaces: formattedRecommendedPlaces,
             },
         });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
+        res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
     }
 };
 
 
+// Controller to get places in a specific region
 const getPlacesByRegion = async(req, res) => {
     const { region } = req.params;
     try {
@@ -236,15 +275,16 @@ const getPlacesByRegion = async(req, res) => {
                 city: region,
             },
         });
-        console.log('Tourist Attractions in ${region}:', placesByRegion);
-        res.status(200).json({ status: 'success', data: placesByRegion });
+        console.log(`Tourist Attractions in ${region}:`, placesByRegion);
+        res.status(200).json({ error: false, message: 'Data retrieved successfully', data: placesByRegion });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
+        res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
     }
 };
 
 
+// Controller to get favorite places with ratings greater than or equal to 4.5
 const getFavoritePlaces = async(req, res) => {
     try {
         const favoritePlaces = await Places.findAll({
@@ -256,14 +296,15 @@ const getFavoritePlaces = async(req, res) => {
         });
 
         console.log('Favorite Tourist Attractions:', favoritePlaces);
-        res.status(200).json({ status: 'success', data: favoritePlaces });
+        res.status(200).json({ error: false, message: 'Data retrieved successfully', data: favoritePlaces });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
+        res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
     }
 };
 
 
+// Controller to get top-rated places based on place ratings
 const getTopRatingPlaces = async(req, res) => {
     try {
         const topRatingPlaces = await ratingusers.findAll({
@@ -280,16 +321,15 @@ const getTopRatingPlaces = async(req, res) => {
         });
 
         console.log('Top Rated Tourist Attractions:', topRatingPlaces);
-        res.status(200).json({ status: 'success', data: topRatingPlaces });
+        res.status(200).json({ error: false, message: 'Data retrieved successfully', data: topRatingPlaces });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
+        res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
     }
 };
-
-
+// Export all controllers for use in routes
 module.exports = {
-    getAllPlaces,
+    getAllPlacesPaginated,
     getPlaceById,
     addPlace,
     updatePlace,
