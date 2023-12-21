@@ -1,18 +1,20 @@
 'use strict';
-const { Model } = require('sequelize');
+const {
+    Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Places extends Model {
+        /**
+         * Helper method for defining associations.
+         * This method is not a part of Sequelize lifecycle.
+         * The `models/index` file will call this method automatically.
+         */
         static associate(models) {
-            this.hasMany(models.UMKM, { foreignKey: 'place_id' });
             this.hasMany(models.ratingusers, { foreignKey: 'place_id', as: 'ratings' });
+
         }
     }
     Places.init({
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-        },
         place_name: DataTypes.STRING,
         description: DataTypes.TEXT,
         category: DataTypes.STRING,
@@ -25,11 +27,10 @@ module.exports = (sequelize, DataTypes) => {
         longitude: DataTypes.FLOAT,
         image_url: DataTypes.STRING,
         review: DataTypes.TEXT,
-        schedule_operational: DataTypes.STRING,
+        schedule_operational: DataTypes.STRING
     }, {
         sequelize,
         modelName: 'Places',
     });
-
     return Places;
 };

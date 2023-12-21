@@ -3,9 +3,7 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
     class UMKM extends Model {
-        static associate(models) {
-            this.belongsTo(models.Places, { foreignKey: 'place_id' });
-        }
+        static associate(models) {}
     }
 
     UMKM.init({
@@ -21,13 +19,6 @@ module.exports = (sequelize, DataTypes) => {
         longitude: DataTypes.FLOAT,
         schedule_operational: DataTypes.STRING,
         image_url: DataTypes.STRING,
-        place_id: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: 'Places',
-                key: 'id',
-            },
-        },
     }, {
         sequelize,
         modelName: 'UMKM',
