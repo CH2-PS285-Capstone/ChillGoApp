@@ -39,17 +39,45 @@ const uploadImageToGCS = async(file) => {
 
 const getAllUMKM = async(req, res) => {
     try {
-        const umkmList = await UMKM.findAll();
+        const { after } = req.query;
+        const pageSize = 10;
+
+        const whereClause = after ? {
+            id: {
+                [Op.gt]: after
+            }
+        } : {};
+
+        const umkmList = await UMKM.findAll({
+            where: whereClause,
+            order: [
+                ['id', 'ASC']
+            ],
+            limit: pageSize,
+        });
 
         console.log('List of all MSMEs:', umkmList);
-        res.status(200).json({ success: true, message: 'Successfully get a list of all MSMEs', data: umkmList });
+
+        const nextCursor = umkmList.length > 0 ? umkmList[umkmList.length - 1].id : null;
+
+        res.status(200).json({
+            success: true,
+            message: 'Successfully get a paginated list of all MSMEs',
+            data: umkmList,
+            nextCursor: nextCursor,
+        });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            error: error.message,
+        });
     }
 };
 
 
+//belum bisa 
 const getAllUMKMByPlaceId = async(req, res) => {
     const placeId = parseInt(req.params.placeId, 10);
     if (isNaN(placeId)) {
@@ -72,32 +100,23 @@ const getAllUMKMByPlaceId = async(req, res) => {
 };
 
 
-const addUMKM = async(req, res) => {
-    const placeId = parseInt(req.params.placeId, 10);
-    if (isNaN(placeId)) {
-        return res.status(400).json({ success: false, message: 'Invalid tourist spot ID' });
-    }
-    const {
-        umkm_name,
-        description,
-        category,
-        city,
-        price,
-        rating,
-        no_telepon,
-        coordinate,
-        latitude,
-        longitude,
-        schedule_operational,
-        umkm_ratings,
-    } = req.body;
-
-
+const createUMKM = async(req, res) => {
     try {
-        const placeData = await Places.findByPk(placeId);
-        if (!placeData) {
-            return res.status(404).json({ success: false, message: 'Tourist attractions not found' });
-        }
+        const {
+            umkm_name,
+            description,
+            category,
+            city,
+            price,
+            rating,
+            no_telepon,
+            coordinate,
+            latitude,
+            longitude,
+            schedule_operational,
+            image_url,
+        } = req.body;
+
         const newUMKM = await UMKM.create({
             umkm_name,
             description,
@@ -110,65 +129,80 @@ const addUMKM = async(req, res) => {
             latitude,
             longitude,
             schedule_operational,
-            umkm_ratings,
-            image_url: req.file ? await uploadImageToGCS(req.file) : null,
-            placeId: placeId,
+            image_url,
         });
 
-        console.log('New MSMEs:', newUMKM);
-        res.status(201).json({ success: true, message: 'MSME added successfully', data: newUMKM });
+        res.status(201).json({
+            success: true,
+            message: 'UMKM created successfully',
+            data: newUMKM,
+        });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            error: error.message,
+        });
     }
 };
 
 
 const updateUMKM = async(req, res) => {
     const { id } = req.params;
-    const {
-        umkm_name,
-        description,
-        category,
-        no_telepon,
-        price,
-        rating,
-        coordinate,
-        latitude,
-        longitude,
-        schedule_operational,
-        image_url,
-        place_id,
-    } = req.body;
 
     try {
+        const {
+            umkm_name,
+            description,
+            category,
+            city,
+            price,
+            rating,
+            no_telepon,
+            coordinate,
+            latitude,
+            longitude,
+            schedule_operational,
+            image_url,
+        } = req.body;
+
         const umkmData = await UMKM.findByPk(id);
+
         if (!umkmData) {
-            return res.status(404).json({ success: false, message: 'MSMEs not found' });
+            return res.status(404).json({ success: false, message: 'UMKM not found' });
         }
 
         await umkmData.update({
             umkm_name,
             description,
             category,
-            no_telepon,
+            city,
             price,
             rating,
+            no_telepon,
             coordinate,
             latitude,
             longitude,
             schedule_operational,
             image_url: req.file ? await uploadImageToGCS(req.file) : umkmData.image_url,
-            place_id,
         });
 
-        console.log('MSMEs Updated:', umkmData);
-        res.status(200).json({ success: true, message: 'MSME updated successfully', data: umkmData });
+        res.status(200).json({
+            success: true,
+            message: 'UMKM updated successfully',
+            data: umkmData,
+        });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            error: error.message,
+        });
     }
 };
+
 
 
 const deleteUMKM = async(req, res) => {
@@ -194,7 +228,7 @@ const deleteUMKM = async(req, res) => {
 module.exports = {
     getAllUMKM,
     getAllUMKMByPlaceId,
-    addUMKM,
+    createUMKM,
     updateUMKM,
     deleteUMKM,
     upload,

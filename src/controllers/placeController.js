@@ -84,115 +84,19 @@ const getAllPlacesPaginated = async(req, res) => {
 const getPlaceById = async(req, res) => {
     const { id } = req.params;
     try {
-        const placeData = await Places.findByPk(id, {
-            include: [{ model: UMKM }],
-
-        });
+        const placeData = await Places.findByPk(id);
         if (!placeData) {
-            return res.status(404).json({ error: true, message: 'Tourist attractions not found', data: null });
+            return res.status(404).json({ error: true, message: 'Tempat wisata tidak ditemukan', data: null });
         }
-        console.log('Tourist Attraction Details:', placeData);
+        console.log('Detail Tempat Wisata:', placeData);
         res.status(200).json({ error: false, message: 'Data retrieved successfully', data: placeData });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
+        res.status(500).json({ error: true, message: 'Kesalahan Server Internal', data: null });
     }
 };
 
-// Controller to add a new place
-const addPlace = async(req, res, next) => {
-    const {
-        place_name,
-        description,
-        category,
-        city,
-        price,
-        rating,
-        call_number,
-        coordinate,
-        latitude,
-        longitude,
-        image_url,
-        review,
-        schedule_operational
-    } = req.body;
 
-    try {
-        const imageUrl = req.file ? await uploadImageToGCS(req.file) : null;
-
-        const newPlace = await Places.create({
-            place_name,
-            description,
-            category,
-            city,
-            price,
-            rating,
-            call_number,
-            coordinate,
-            latitude,
-            longitude,
-            image_url: imageUrl,
-            review,
-            schedule_operational
-        });
-
-        console.log('New Tourist Attractions:', newPlace);
-        res.status(201).json({ error: false, message: 'Tourist attractions added successfully', data: newPlace });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
-    }
-};
-
-// Controller to update an existing place by ID
-const updatePlace = async(req, res) => {
-    const { id } = req.params;
-    const {
-        place_name,
-        description,
-        category,
-        city,
-        price,
-        rating,
-        call_number,
-        coordinate,
-        latitude,
-        longitude,
-        review,
-        schedule_operational
-    } = req.body;
-
-    try {
-        const placeData = await Places.findByPk(id);
-        if (!placeData) {
-            return res.status(404).json({ error: true, message: 'Tourist attractions not found', data: null });
-        }
-
-        const imageUrl = req.file ? await uploadImageToGCS(req.file) : placeData.image_url;
-
-        await placeData.update({
-            place_name,
-            description,
-            category,
-            city,
-            price,
-            rating,
-            call_number,
-            coordinate,
-            latitude,
-            longitude,
-            image_url: imageUrl,
-            review,
-            schedule_operational
-        });
-
-        console.log('Tourist Attractions Updated:', placeData);
-        res.status(200).json({ error: false, message: 'Tourist attractions updated successfully', data: placeData });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
-    }
-};
 
 // Controller to delete a place by ID
 const deletePlace = async(req, res) => {
@@ -331,8 +235,6 @@ const getTopRatingPlaces = async(req, res) => {
 module.exports = {
     getAllPlacesPaginated,
     getPlaceById,
-    addPlace,
-    updatePlace,
     deletePlace,
     getRecommendedPlaces,
     getPlacesByRegion,
