@@ -77,7 +77,6 @@ const getAllUMKM = async(req, res) => {
 };
 
 
-//belum bisa 
 const getAllUMKMByPlaceId = async(req, res) => {
     const placeId = parseInt(req.params.placeId, 10);
     if (isNaN(placeId)) {

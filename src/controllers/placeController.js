@@ -68,6 +68,7 @@ const getAllPlacesPaginated = async(req, res) => {
             message: 'Data retrieved successfully',
             data: places,
             nextCursor,
+            hasNextPage: nextCursor !== null,
         });
     } catch (error) {
         console.error('Error:', error);
@@ -178,6 +179,7 @@ const getPlacesByRegion = async(req, res) => {
             where: {
                 city: region,
             },
+            limit: 10,
         });
         console.log(`Tourist Attractions in ${region}:`, placesByRegion);
         res.status(200).json({ error: false, message: 'Data retrieved successfully', data: placesByRegion });
@@ -197,6 +199,7 @@ const getFavoritePlaces = async(req, res) => {
                     [Op.gte]: 4.5,
                 },
             },
+            limit: 10,
         });
 
         console.log('Favorite Tourist Attractions:', favoritePlaces);
