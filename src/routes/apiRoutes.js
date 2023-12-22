@@ -8,7 +8,7 @@ const uploadMiddleware = multer({ storage: uploadStorage });
 const router = express.Router();
 
 
-
+//all route
 router.get('/places', placeController.getAllPlacesPaginated);
 router.get('/places/:id', placeController.getPlaceById);
 router.delete('/places/:id', placeController.deletePlace);
