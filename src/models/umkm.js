@@ -3,7 +3,9 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
     class UMKM extends Model {
-        static associate(models) {}
+        static associate(models) {
+            this.hasOne(models.Places, { foreignKey: 'umkm_id', as: 'place' });
+        }
     }
 
     UMKM.init({
