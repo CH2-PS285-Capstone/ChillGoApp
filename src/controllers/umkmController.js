@@ -6,6 +6,7 @@ const upload = multer({ storage: storage }).single('file');
 const { storage: gcsStorage, bucketName } = require('../config/gcs.config');
 
 
+// Function to upload an image to Google Cloud Storage
 const uploadImageToGCS = async(file) => {
     try {
         if (!file || !file.originalname || !file.mimetype || !file.buffer) {
@@ -37,34 +38,33 @@ const uploadImageToGCS = async(file) => {
 };
 
 
+// Get a paginated list of all MSMEs
 const getAllUMKM = async(req, res) => {
     try {
-        const { after } = req.query;
+        const { page } = req.query;
         const pageSize = 10;
 
-        const whereClause = after ? {
-            id: {
-                [Op.gt]: after
-            }
-        } : {};
+        const offset = (page - 1) * pageSize;
 
         const umkmList = await UMKM.findAll({
-            where: whereClause,
             order: [
                 ['id', 'ASC']
             ],
             limit: pageSize,
+            offset: offset,
         });
 
         console.log('List of all MSMEs:', umkmList);
 
-        const nextCursor = umkmList.length > 0 ? umkmList[umkmList.length - 1].id : null;
+        const hasNextPage = umkmList.length === pageSize;
+        const nextPage = hasNextPage ? parseInt(page) + 1 : null;
 
         res.status(200).json({
             success: true,
             message: 'Successfully get a paginated list of all MSMEs',
             data: umkmList,
-            nextCursor: nextCursor,
+            hasNextPage: hasNextPage,
+            nextPage: nextPage,
         });
     } catch (error) {
         console.error('Error:', error);
@@ -77,6 +77,7 @@ const getAllUMKM = async(req, res) => {
 };
 
 
+// Get tourist spot with associated MSMEs by ID
 const getAllUMKMByPlaceId = async(req, res) => {
     const placeId = parseInt(req.params.placeId, 10);
     if (isNaN(placeId)) {
@@ -84,14 +85,19 @@ const getAllUMKMByPlaceId = async(req, res) => {
     }
     console.log('Value of placeId:', placeId);
     try {
-        const umkmList = await UMKM.findAll({
-            where: {
-                place_id: placeId,
-            },
+        const touristSpot = await Places.findByPk(placeId, {
+            include: [{
+                model: UMKM,
+                as: 'umkm',
+            }, ],
         });
 
-        console.log('MSMEs in Tourist Attractions with ID ${placeId}:', umkmList);
-        res.status(200).json({ success: true, message: 'Successfully get a list of MSMEs', data: umkmList });
+        if (!touristSpot) {
+            return res.status(404).json({ success: false, message: 'Tourist spot not found', data: null });
+        }
+
+        console.log('Tourist Spot with MSMEs:', touristSpot);
+        res.status(200).json({ success: true, message: 'Successfully get tourist spot with MSMEs', data: touristSpot });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
@@ -99,6 +105,7 @@ const getAllUMKMByPlaceId = async(req, res) => {
 };
 
 
+// Create a new MSME
 const createUMKM = async(req, res) => {
     try {
         const {
@@ -147,6 +154,7 @@ const createUMKM = async(req, res) => {
 };
 
 
+// Update an existing MSME
 const updateUMKM = async(req, res) => {
     const { id } = req.params;
 
@@ -203,7 +211,7 @@ const updateUMKM = async(req, res) => {
 };
 
 
-
+// Delete an existing MSME
 const deleteUMKM = async(req, res) => {
     const { id } = req.params;
 

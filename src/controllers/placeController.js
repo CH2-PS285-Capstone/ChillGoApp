@@ -42,40 +42,37 @@ const uploadImageToGCS = async(file) => {
 
 // Controller to get a paginated list of places
 const getAllPlacesPaginated = async(req, res) => {
-    const { cursor } = req.query;
-    const limit = 7;
+    const { page } = req.query;
+    const limit = 10;
+    const offset = (page - 1) * limit;
 
     try {
-        const whereClause = cursor ? {
-            id: {
-                [Op.gt]: cursor
-            }
-        } : {};
-        console.log('Where Clause:', whereClause);
-
         const places = await Places.findAll({
-            where: whereClause,
             limit,
+            offset,
+            include: [{
+                model: UMKM,
+                as: 'umkm',
+                attributes: ['umkm_name', 'description', 'category', 'city', 'price', 'rating', 'no_telepon', 'coordinate', 'latitude', 'longitude', 'schedule_operational', 'image_url'],
+            }],
         });
 
         console.log('Places:', places);
 
-        const nextCursor = places.length > 0 ? places[places.length - 1].id : null;
-        console.log('Next Cursor:', nextCursor);
+        const hasNextPage = places.length === limit;
 
         res.status(200).json({
             error: false,
             message: 'Data retrieved successfully',
             data: places,
-            nextCursor,
-            hasNextPage: nextCursor !== null,
+            hasNextPage,
         });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({
             error: true,
             message: 'Internal Server Error',
-            data: null
+            data: null,
         });
     }
 };
@@ -85,10 +82,18 @@ const getAllPlacesPaginated = async(req, res) => {
 const getPlaceById = async(req, res) => {
     const { id } = req.params;
     try {
-        const placeData = await Places.findByPk(id);
+        const placeData = await Places.findByPk(id, {
+            include: [{
+                model: UMKM,
+                as: 'umkm',
+                attributes: ['umkm_name', 'description', 'category', 'city', 'price', 'rating', 'no_telepon', 'coordinate', 'latitude', 'longitude', 'schedule_operational', 'image_url'],
+            }],
+        });
+
         if (!placeData) {
             return res.status(404).json({ error: true, message: 'Tempat wisata tidak ditemukan', data: null });
         }
+
         console.log('Detail Tempat Wisata:', placeData);
         res.status(200).json({ error: false, message: 'Data retrieved successfully', data: placeData });
     } catch (error) {
@@ -96,7 +101,6 @@ const getPlaceById = async(req, res) => {
         res.status(500).json({ error: true, message: 'Kesalahan Server Internal', data: null });
     }
 };
-
 
 
 // Controller to delete a place by ID
@@ -179,10 +183,20 @@ const getPlacesByRegion = async(req, res) => {
             where: {
                 city: region,
             },
+            include: [{
+                model: UMKM,
+                as: 'umkm', // Memberikan alias untuk menghindari konflik dengan atribut lain
+            }, ],
             limit: 10,
         });
+
         console.log(`Tourist Attractions in ${region}:`, placesByRegion);
-        res.status(200).json({ error: false, message: 'Data retrieved successfully', data: placesByRegion });
+
+        res.status(200).json({
+            error: false,
+            message: 'Data retrieved successfully',
+            data: placesByRegion,
+        });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
@@ -199,6 +213,10 @@ const getFavoritePlaces = async(req, res) => {
                     [Op.gte]: 4.5,
                 },
             },
+            include: [{
+                model: UMKM,
+                as: 'umkm',
+            }, ],
             limit: 10,
         });
 
@@ -223,8 +241,14 @@ const getTopRatingPlaces = async(req, res) => {
             order: [
                 ['place_rating', 'DESC'],
             ],
-            limit: 5,
-            include: [Places],
+            limit: 10,
+            include: [{
+                model: Places,
+                include: [{
+                    model: UMKM,
+                    as: 'umkm',
+                }, ],
+            }, ],
         });
 
         console.log('Top Rated Tourist Attractions:', topRatingPlaces);
@@ -234,6 +258,8 @@ const getTopRatingPlaces = async(req, res) => {
         res.status(500).json({ error: true, message: 'Internal Server Error', data: null });
     }
 };
+
+
 // Export all controllers for use in routes
 module.exports = {
     getAllPlacesPaginated,
