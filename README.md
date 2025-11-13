@@ -1,2 +1,2 @@
 # ChillGoApp
-Capstone 2023
+Budaya Go 2025
